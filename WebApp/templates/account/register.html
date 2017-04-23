@@ -1,11 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Create an account{% endblock %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 {% block content %}
+<div class="col-md-3 col-md-offset-4 well">
     <h1>Create an account</h1>
-    <p>Please, sign up using the following form:</p>
     <form action="." method="post">
-        {{ user_form.as_p }}
-        {% csrf_token %}
-        <p><input type="submit" value="Create my account"></p>
+         {% csrf_token %}
+        {% bootstrap_form user_form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary"> Submit </button>
+        {% endbuttons %}
     </form>
+</div>
 {% endblock %}
