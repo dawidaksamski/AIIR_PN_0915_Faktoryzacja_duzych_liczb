@@ -1,11 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Log-in{% endblock %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 {% block content %}
+<div class="col-md-3 col-md-offset-4 well">
     <h1>Log-in</h1>
-    <p>Please, use the following form to log-in:</p>
-    <form action="" method="post">
-        {{ form.as_p }}
+    <form action="" method="post" class="form">
         {% csrf_token %}
-        <p><input type="submit" value="Log-in"></p>
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary"> Submit </button>
+        {% endbuttons %}
     </form>
+</div>
 {% endblock %}

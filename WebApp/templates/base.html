@@ -1,17 +1,24 @@
 {% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 <!DOCTYPE html>
 <html>
-<head>
-    <title>{% block title %}{% endblock %}</title>
-    <link href="{% static "css/base.css" %}" rel="stylesheet">
-</head>
-<body>
-<div id="header">
-    <span class="logo">WebApp</span>
-</div>
-<div id="content">
-    {% block content %}
-    {% endblock %}
-</div>
-</body>
+    <head>
+        <title>WebApp</title>
+    </head>
+    <body>
+        <header class="container">
+            <nav class="navbar navbar-default">
+            <div class="navbar-header" style="padding: 10px;">
+              App name goes here
+            </div>
+          </nav>
+        </header>
+
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
 </html>
