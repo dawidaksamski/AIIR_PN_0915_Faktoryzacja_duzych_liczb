@@ -1,7 +1,8 @@
 ##########################################
-# faktoryzacja liczb metoda bruteforce
+# faktoryzacja liczb metoda 6k+1
 # wersja rownolegla wykorzystujaca rdd
-# Bartek Lawniczak 10.04.17
+# powinno byæ szybsze od bruteforce
+# Bartek Lawniczak 05.05.17
 #bez errorow wykonuje dzielenie 16-cyforwej liczby (okolo2^40)
 ##########################################
 import math
@@ -15,7 +16,12 @@ x = number = main_number
 
 while x>1:
     sqrted = math.sqrt(number)
-    rdd = sc.parallelize(range(2,long(round(sqrted + 1))),partitions)
+    divisors = [2,3]
+    x = 1
+    while 6*x+1 < round(sqrted):
+        divisors.append(6*x+1)
+        x = x+1
+    rdd = sc.parallelize(range(2,divisors,partitions)
     try:
         x = rdd.filter(lambda x: (number%x==0)).first()
     except ValueError:
