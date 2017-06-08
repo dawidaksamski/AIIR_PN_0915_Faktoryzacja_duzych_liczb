@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    {% if loggedInSuccess %}
+        <div class="alert alert-success">
+            <p>Your account was created successfully.</p>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="jumbotron">
+            <h1> Factorer </h1>
+            <p>
+                This application provides tools to factore a huge number.
+            </p>
+            {% if user.is_anonymous %}
+                <p>
+                    <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Log in</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

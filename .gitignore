@@ -97,4 +97,4 @@ ENV/
 
 # PyChram
 .idea/
-WebApp/db.sqlite3
+db.sqlite3
