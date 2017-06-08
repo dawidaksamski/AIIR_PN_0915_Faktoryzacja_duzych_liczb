@@ -1,0 +1,19 @@
+.signin{
+    animation: slideInDown 1s;
+}
+
+.signin .h2{
+     margin-top: 0;
+}
+
+.signin .form {
+    margin-bottom: 20px;
+}
+
+.signin .glyphicon {
+    top: 0;
+}
+
+.signin .input-group {
+    padding: 10px 10px 10px 0;
+}
