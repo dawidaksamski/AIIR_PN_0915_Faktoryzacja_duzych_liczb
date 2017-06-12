@@ -1,14 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-
-    {% if loggedInSuccess %}
-        <div class="alert alert-success">
-            <p>Your account was created successfully.</p>
-        </div>
-    {% endif %}
-
-    <div class="row">
-        <div class="jumbotron">
+    <div class="row animated slideInDown">
+        <div class="jumbotron" style="background: white;">
             <h1> Factorer </h1>
             <p>
                 This application provides tools to factore a huge number.

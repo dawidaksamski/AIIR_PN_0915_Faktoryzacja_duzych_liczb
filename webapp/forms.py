@@ -1,5 +1,12 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
+
+
+class TaskForm(forms.Form):
+    number = forms.CharField(label="Number to factor",
+                             validators=[RegexValidator(r'^[0-9]*$',
+                                         'Only numbers are allowed.')])
 
 
 class LoginForm(forms.Form):
