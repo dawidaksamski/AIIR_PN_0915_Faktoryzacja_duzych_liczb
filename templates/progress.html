@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row" style="background: none;">
+        <div class="col-md-6 col-md-offset-3 well signin animated slideInDown">
+            <h2>Progress of your task</h2>
+            <h4 id="{{ task.id }}" name="id">Number: {{ task.number }}</h4>
+            <div class="progress" style="width: 100%;">
+                <div id="bar"
+                     class="progress-bar progress-bar-striped active"
+                     role="progressbar"
+                     style="width:{{ task.progress }}%">
+                    {{ task.progress }}%
+                </div>
+            </div>
+            <a href="{% url 'dashboard' %}">Back</a>
+        </div>
+    </div>
+{% endblock content %}

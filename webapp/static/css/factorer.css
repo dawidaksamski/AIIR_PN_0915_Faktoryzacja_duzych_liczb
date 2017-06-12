@@ -1,5 +1,24 @@
-.signin{
-    animation: slideInDown 1s;
+html{
+    height: 100%
+}
+
+body{
+    background: url("../img/background.jpg");
+    background-size: cover;
+    height: 100%;
+}
+
+.app-wrapper{
+    background-color: rgba(89, 94, 103,.95);
+    height: 100%;
+    width: 100%;
+    min-height: 100%;
+}
+
+.row{
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .signin .h2{
@@ -16,4 +35,16 @@
 
 .signin .input-group {
     padding: 10px 10px 10px 0;
+}
+
+.modal-body .form-horizontal .col-sm-2,
+.modal-body .form-horizontal .col-sm-10 {
+    width: 100%
+}
+
+.modal-body .form-horizontal .control-label {
+    text-align: left;
+}
+.modal-body .form-horizontal .col-sm-offset-2 {
+    margin-left: 15px;
 }

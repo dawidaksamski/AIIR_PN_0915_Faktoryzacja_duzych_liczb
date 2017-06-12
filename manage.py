@@ -2,8 +2,13 @@
 import os
 import sys
 
-import pymysql
-pymysql.install_as_MySQLdb()
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    raise ImportError("Error: you don't have installed MySQL connector."
+                      "Use command: 'pip install pymysql' to install it")
+
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Factorer.settings")
