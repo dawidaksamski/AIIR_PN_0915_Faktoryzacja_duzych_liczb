@@ -22,7 +22,7 @@
         </p>
 
         <table class="table">
-            <thead style="background-color: black; color: white;">
+            <thead class="table-header">
             <th>#</th>
             <th>Created date</th>
             <th>Finish date</th>
@@ -59,8 +59,10 @@
                     </td>
                     <td id="state-{{ task.id }}">{{ task.get_state_display }}</td>
                     <td class="text-center">
-                        <a href="{% url 'progress' task.id %}" class="btn btn-success">Details</a>
+                        <a href="{% url 'progress' task.id %}" class="btn btn-primary">Details</a>
                         {% if task.state == 0 %}
+                            <a href="{% url 'edit-task' task.id %}"
+                               class="btn btn-success">Edit</a>
                             <button id="cancel-btn-{{ task.id }}"
                                     class="btn btn-warning"
                                     onclick="cancelTask({{ task.id }})">Cancel</button>
@@ -72,7 +74,7 @@
         </table>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal New task-->
     <div class="modal fade" id="task" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">

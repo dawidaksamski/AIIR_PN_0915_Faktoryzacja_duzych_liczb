@@ -32,5 +32,6 @@ urlpatterns = [
     url(r"^tasks/?$", views.tasks, name="tasks"),
     url(r"^edit-user/(?P<user_id>\d+)/?$", views.edit_user, name="edit-user"),
     url(r"^delete-user-ajax/?$", views.delete_user_ajax, name="delete-user-ajax"),
-    url(r"^delete-task-ajax/?$", views.delete_task_ajax, name="delete-task-ajax")
+    url(r"^delete-task-ajax/?$", views.delete_task_ajax, name="delete-task-ajax"),
+    url(r"^edit-task/(?P<task_id>\d+)/?$", views.edit_task, name="edit-task")
 ]

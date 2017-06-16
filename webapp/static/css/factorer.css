@@ -66,3 +66,7 @@ body{
     background-color: black;
     color: white;
 }
+
+.bg-white{
+    background: white;
+}

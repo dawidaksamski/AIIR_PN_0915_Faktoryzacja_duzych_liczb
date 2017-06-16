@@ -31,9 +31,9 @@ def dashboard(request):
             task = Task(number=number, priority=priority, user=request.user)
             task.save()
             some_task.delay(task)
-            tasks = Task.objects.filter(user=request.user).order_by("-job_date")
+            user_tasks = Task.objects.filter(user=request.user).order_by("-job_date")
             return render(request, "dashboard.html",
-                          dict(addedSuccessfully=True, task_form=task_form, tasks=tasks))
+                          dict(addedSuccessfully=True, task_form=task_form, tasks=user_tasks))
         else:
             return HttpResponse("Failed to get brute force number")
     else:
@@ -99,16 +99,32 @@ def edit_user(request, user_id):
 @login_required
 def edit_task(request, task_id):
     if request.method == "POST":
-        # TODO edit of task
-        tasks = Task.objects.order_by("job_date")
-        return render(request,
-                      "tasks.html",
-                      dict(tasks=tasks))
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task_to_edit = Task.objects.get(pk=form.cleaned_data["id"])
+            task_to_edit.number = form.cleaned_data["number"]
+            task_to_edit.priority = form.cleaned_data["priority"]
+            task_to_edit.save()
+            user_tasks = Task.objects.filter(user=request.user).order_by("-job_date")
+            return render(request,
+                          "tasks.html",
+                          dict(tasks=user_tasks,
+                               taskEditedSuccessfully=True))
+        else:
+            task_to_edit = Task.objects.get(task_id)
+            form = TaskForm(instance=task_to_edit)
+            user_tasks = Task.objects.filter(user=request.user).order_by("-job_date")
+            return render(request,
+                          "edit_task.html",
+                          dict(tasks=user_tasks,
+                               formInvalid=True,
+                               form=form))
     else:
         task_to_edit = Task.objects.get(pk=task_id)
+        form = TaskForm(instance=task_to_edit)
         return render(request,
                       "edit_task.html",
-                      dict(task=task_to_edit))
+                      dict(form=form))
 
 
 def login(request):

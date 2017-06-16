@@ -2,24 +2,32 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from webapp.choices import *
+from webapp.models import Task
 
 
-class TaskForm(forms.Form):
+class TaskForm(forms.ModelForm):
+    id = forms.IntegerField(required=False)
     number = forms.CharField(label="Number to factor",
                              required=True,
                              validators=[RegexValidator(r'^[0-9]*$',
-                                         'Only numbers are allowed.')])
+                                                        'Only numbers are allowed.')])
     priority = forms.ChoiceField(label="Priority",
                                  choices=PRIORITY_CHOICES,
                                  initial="Low",
                                  widget=forms.Select(),
                                  required=True)
 
+    class Meta:
+        model = Task
+        fields = ("id", "number", "priority")
+
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="Username")
+    username = forms.CharField(label="Username",
+                               required=True)
     password = forms.CharField(label="Password",
-                               widget=forms.PasswordInput)
+                               widget=forms.PasswordInput,
+                               required=True)
 
 
 class UserRegistrationForm(forms.ModelForm):
