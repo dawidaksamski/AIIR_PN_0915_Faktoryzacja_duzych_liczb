@@ -1,18 +1,72 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row" style="background: none;">
-        <div class="col-md-6 col-md-offset-3 well signin animated slideInDown">
-            <h2>Progress of your task</h2>
-            <h4 id="{{ task.id }}" name="id">Number: {{ task.number }}</h4>
-            <div class="progress" style="width: 100%;">
-                <div id="bar"
-                     class="progress-bar progress-bar-striped active"
-                     role="progressbar"
-                     style="width:{{ task.progress }}%">
-                    {{ task.progress }}%
-                </div>
+    <div class="container-fluid animated slideInDown">
+        <div class="row round-only-top">
+            <div class="col-md-6">
+                <h1>Details</h1>
+                <h3 id="{{ task.id }}" name="task-id"><b>Number:</b> {{ task.number }}</h3>
+                <h4><b>Task created:</b> {{ task.job_date }}</h4>
+                <h4><b>Task done:</b> {{ task.job_finished_date }}</h4>
+                <h4><b> Priority:
+                    <span style="{% if task.priority == 0 %}
+                        color: green;
+                    {% elif task.priority == 1 %}
+                        color: yellow;
+                    {% elif task.priority == 2 %}
+                        color: orange;
+                    {% else %}
+                        color: red;
+                    {% endif %}">
+                            {{ task.get_priority_display }}
+                            </span>
+                </b></h4>
+                <h4><b>Status:</b> {{ task.get_state_display }}</h4>
             </div>
-            <a href="{% url 'dashboard' %}">Back</a>
+
+            <div class="col-md-6">
+                <h1>Progress</h1>
+                {% if task.state == -1 %}
+                    <h3>Task cancelled</h3>
+                {% elif task.state == 0 %}
+                    <h3>Task is in the queue</h3>
+                {% else %}
+                    <div class="progress" style="width: 100%;">
+                        <div id="bar"
+                             class="progress-bar progress-bar-striped
+                                {% if task.progress < 100 %}
+                                    active
+                                {% endif %}"
+                             role="progressbar"
+                             style="width:{{ task.progress }}%;
+                                     {% if task.progress >= 100 %}
+                                         background-color: green;
+                                     {% endif %}">
+                            {{ task.progress }}%
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row round-only-bottom">
+            <h1>Result</h1>
+            <div>
+                {% if task.result %}
+                    <div style="font-size: 18px; word-wrap: break-word;">
+                        <b>{{ task.number }} = </b>
+                        {{ task.result }}
+                    </div>
+                {% else %}
+                    <h3>No result available yet</h3>
+                {% endif %}
+            </div>
+            <div class="actions">
+                {% if task.state == 0 %}
+                    <button class="btn btn-warning"
+                        onclick="cancelTask({{ task.id }})">Cancel task</button>
+                {% endif %}
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-primary">Back</a>
+            </div>
         </div>
     </div>
 {% endblock content %}

@@ -11,28 +11,29 @@
         </div>
     {% endif %}
 
-    <div class="row animated slideInDown">
+    <div class="row round-all animated slideInDown">
         <h2 class="page-header">Your tasks</h2>
         <p>
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#task">
-                Add task
+            <button type="button" class="btn btn-block btn-lg btn-primary"
+                    data-toggle="modal" data-target="#task">
+                Add a new   task
             </button>
         </p>
 
-        <table class="table table-striped">
-            <thead>
-            <th>Number</th>
+        <table class="table">
+            <thead style="background-color: black; color: white;">
+            <th>#</th>
             <th>Created date</th>
             <th>Finish date</th>
+            <th>Priority</th>
             <th>Status</th>
-            <th>Progress</th>
-            <th>Result</th>
+            <th class="text-center">Actions</th>
             </thead>
             <tbody>
             {% for task in tasks %}
                 <tr>
-                    <td><b>{{ task.number }}</b></td>
+                    <td><b>{{ number }}</b></td>
                     <td>{{ task.job_date }}</td>
                     <td>
                         {% if task.job_finished_date is None %}
@@ -41,17 +42,30 @@
                             {{ task.job_finished_date }}
                         {% endif %}
                     </td>
-                    <td>{{ task.get_state_display }}</td>
                     <td>
-                        {% if task.state == 1 %}
-                            <a href="{% url 'progress' task.id %}">See progress</a>
-                        {% elif task.state == 2 %}
-                            <span>Task finished</span>
-                        {% else %}
-                            <span>Task is waiting in the queue</span>
+                        <b>
+                            <span style="{% if task.priority == 0 %}
+                                            color: green;
+                                         {% elif task.priority == 1 %}
+                                            color: yellow;
+                                         {% elif task.priority == 2 %}
+                                            color: orange;
+                                         {% else %}
+                                            color: red;
+                                         {% endif %}">
+                            {{ task.get_priority_display }}
+                            </span>
+                        </b>
+                    </td>
+                    <td id="state-{{ task.id }}">{{ task.get_state_display }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'progress' task.id %}" class="btn btn-success">Details</a>
+                        {% if task.state == 0 %}
+                            <button id="cancel-btn-{{ task.id }}"
+                                    class="btn btn-warning"
+                                    onclick="cancelTask({{ task.id }})">Cancel</button>
                         {% endif %}
                     </td>
-                    <td>{{ task.result }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -78,6 +92,13 @@
                                    for="number">Enter number to factor:</label>
                             <div class="col-sm-12">
                                 {{ task_form.number|add_class:"form-control"|attr:"placeholder:Enter number" }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" style="margin-left: 15px;"
+                                   for="priority">Select priority of the task:</label>
+                            <div class="col-sm-12">
+                                {{ task_form.priority|add_class:"form-control" }}
                             </div>
                         </div>
 

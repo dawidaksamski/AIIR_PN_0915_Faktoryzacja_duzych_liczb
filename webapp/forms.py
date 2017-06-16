@@ -1,12 +1,19 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from webapp.choices import *
 
 
 class TaskForm(forms.Form):
     number = forms.CharField(label="Number to factor",
+                             required=True,
                              validators=[RegexValidator(r'^[0-9]*$',
                                          'Only numbers are allowed.')])
+    priority = forms.ChoiceField(label="Priority",
+                                 choices=PRIORITY_CHOICES,
+                                 initial="Low",
+                                 widget=forms.Select(),
+                                 required=True)
 
 
 class LoginForm(forms.Form):

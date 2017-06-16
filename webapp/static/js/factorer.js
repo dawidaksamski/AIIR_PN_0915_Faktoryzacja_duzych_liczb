@@ -7,32 +7,82 @@ $(document).ready(function () {
 function progressBar() {
     var done = false;
     $(document).ready((function worker() {
-        var task_id = $("h4[name=id]").attr("id");
+        var task_id = $("h3[name=task-id]").attr("id");
         $.ajax({
-            url: "progress-ajax",
-            method: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({"id": task_id }),
-            success: function (data) {
-                $("#bar").width(data.progress + "%").text(data.progress + "%");
-                console.log(data.progress);
-                if(data.progress >= 100){
-                    done = true;
-                }
-            },
-            complete: function () {
-                // Schedule the next request when the current one's complete
-                if(!done){
-                    setTimeout(worker, 500);
-                }
-                else{
-                    return;
+                url: "progress-ajax",
+                method: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({"id": task_id}),
+                success: function (data) {
+                    $("#bar").width(data.progress + "%").text(data.progress + "%");
+                    if (data.progress >= 100) {
+                        done = true;
+                        $("#bar").removeClass("active").css("background-color", "green");
+                    }
+                },
+                complete: function () {
+                    // Schedule the next request when the current one's complete
+                    if (!done) {
+                        setTimeout(worker, 500);
+                    }
+                    else {
+                        return;
+                    }
                 }
             }
-        }
         );
     })())
 };
+
+function cancelTask(id) {
+    $(document).ready(function () {
+        $.ajax({
+            url: "cancel-task-ajax",
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({"id": id}),
+            success: function (data) {
+                if (data.success) {
+                    $("#state-" + id).text("Cancelled");
+                    $("#cancel-btn-" + id).remove()
+                }
+            }
+        });
+    })
+};
+
+function deleteUser(id) {
+    $(document).ready(function () {
+        $.ajax({
+            url: "delete-user-ajax",
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({"id": id}),
+            success: function (data) {
+                if (data.success) {
+                    $("#user-" + id).remove();
+                }
+            }
+        });
+    })
+};
+
+function deleteTask(id) {
+    $(document).ready(function () {
+        $.ajax({
+            url: "delete-task-ajax",
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({"id": id}),
+            success: function (data) {
+                if (data.success) {
+                    $("#task-row-" + id).remove();
+                }
+            }
+        });
+    })
+};
+
 
 function getCookie(name) {
     var cookieValue = null;
@@ -57,15 +107,15 @@ function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 $.ajaxSetup({
-    beforeSend: function(xhr, settings) {
+    beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }
 });
 
-$(document).ready(function(){
-    if($("#bar").length > 0){
+$(document).ready(function () {
+    if ($("#bar").length > 0) {
         progressBar();
     }
 });
