@@ -1,22 +1,19 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% block content %}
-    {% if form.errors %}
-        <div class="alert alert-danger animated zoomIn">
-            <p>Your username and password didn't match. Please try again.</p>
-        </div>
-    {% elif registrationSuccess %}
-        <div class="alert alert-success animated zoomIn">
-            <p>Your account was created successfully.</p>
-        </div>
-    {% elif loggedOut %}
-        <div class="alert alert-success animated zoomIn">
-            <p>You have been logged out successfully.</p>
-        </div>
-    {% elif disabled %}
-        <div class="alert alert-danger animated zoomIn">
-            <p>Your account is disabled.</p>
-        </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tag == "error" %}
+                <div class="alert alert-danger animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
     {% endif %}
 
     {% if next %}
@@ -33,7 +30,7 @@
     {% endif %}
 
     <div class="row" style="background: none;">
-        <div class="col-md-4 col-md-offset-4 well signin animated slideInDown">
+        <div class="col-md-4 col-md-offset-4 well signin bg-white animated slideInDown">
             <h2>Login</h2>
             <form action="{% url 'login' %}" method="post" class="form-horizontal">
                 {% csrf_token %}

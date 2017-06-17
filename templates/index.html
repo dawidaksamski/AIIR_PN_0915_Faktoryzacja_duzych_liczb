@@ -1,7 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="row animated slideInDown">
-        <div class="jumbotron" style="background: white;">
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tag == "error" %}
+                <div class="alert alert-danger animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="row round-all animated slideInDown">
+        <div class="jumbotron bg-white">
             <h1> Factorer </h1>
             <p>
                 This application provides tools to factore a huge number.
