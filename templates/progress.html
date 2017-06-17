@@ -1,5 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tag == "error" %}
+                <div class="alert alert-danger animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
     <div class="container-fluid animated slideInDown">
         <div class="row round-only-top">
             <div class="col-md-6">
@@ -64,7 +79,7 @@
                     <button class="btn btn-warning"
                         onclick="cancelTask({{ task.id }})">Cancel task</button>
                 {% endif %}
-                <a href="{% url 'dashboard' %}"
+                <a href="{{ request.META.HTTP_REFERER }}"
                    class="btn btn-primary">Back</a>
             </div>
         </div>

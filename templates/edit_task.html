@@ -1,23 +1,19 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% block content %}
-    {% if formInvalid %}
-        <div class="alert alert-danger animated zoomIn">
-            <p> Something wrong in the form. </p>
-        </div>
-    {% endif %}
 
-    {% if next %}
-        {% if user.is_authenticated %}
-            <div class="alert alert-danger animated zoomIn">
-                <p>Your account doesn't have access to this page. To proceed,
-                    please login with an account that has access.</p>
-            </div>
-        {% else %}
-            <div class="alert alert-danger animated zoomIn">
-                <p>Please login to see this page.</p>
-            </div>
-        {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tag == "error" %}
+                <div class="alert alert-danger animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
     {% endif %}
 
     <div class="row" style="background: none;">
@@ -29,6 +25,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ next }}"/>
                         <input type="hidden" name="id" value="{{ form.id.value }}"/>
+                        <input type="hidden" name="next" value="{{ request.META.HTTP_REFERER }}"/>
                         <div class="form-group">
                             {{ form.number.label_tag }}
                             {{ form.number|add_class:"form-control" }}
@@ -42,7 +39,7 @@
                         </div>
                     </form>
                 </div>
-                <a href="{% url 'dashboard' %}">Back</a>
+                <a href="{{ request.META.HTTP_REFERER }}">Back</a>
             </div>
         </div>
     </div>

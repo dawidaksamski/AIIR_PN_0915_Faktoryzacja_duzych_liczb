@@ -52,8 +52,10 @@ function cancelTask(id) {
 };
 
 function deleteUser(id) {
-    $(document).ready(function () {
-        $.ajax({
+    $(document).ready(function (){
+        var result = confirm("Are you sure?");
+        if(result){
+            $.ajax({
             url: "delete-user-ajax",
             method: "POST",
             contentType: "application/json; charset=utf-8",
@@ -64,22 +66,26 @@ function deleteUser(id) {
                 }
             }
         });
+        }
     })
 };
 
 function deleteTask(id) {
     $(document).ready(function () {
-        $.ajax({
-            url: "delete-task-ajax",
-            method: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({"id": id}),
-            success: function (data) {
-                if (data.success) {
-                    $("#task-row-" + id).remove();
+        var result = confirm("Are you sure?");
+        if(result){
+            $.ajax({
+                url: "delete-task-ajax",
+                method: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({"id": id}),
+                success: function (data) {
+                    if (data.success) {
+                        $("#task-row-" + id).remove();
+                    }
                 }
-            }
-        });
+            });
+        }
     })
 };
 

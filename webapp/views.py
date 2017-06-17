@@ -5,10 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
+from django.contrib import messages
 
-from .forms import LoginForm, UserRegistrationForm, TaskForm
+from .forms import LoginForm, UserRegistrationForm, TaskForm, EditUserForm
 from .models import Task
 from .tasks import some_task
 from .choices import *
@@ -31,11 +32,11 @@ def dashboard(request):
             task = Task(number=number, priority=priority, user=request.user)
             task.save()
             some_task.delay(task)
-            user_tasks = Task.objects.filter(user=request.user).order_by("-job_date")
-            return render(request, "dashboard.html",
-                          dict(addedSuccessfully=True, task_form=task_form, tasks=user_tasks))
+            messages.success(request, "Successfully added a new task.")
+            return redirect("dashboard")
         else:
-            return HttpResponse("Failed to get brute force number")
+            messages.error(request, "Failed to add new task.")
+            return redirect("dashboard")
     else:
         tasks = Task.objects.filter(user=request.user).order_by("-job_date")
         return render(request, "dashboard.html", dict(task_form=task_form, tasks=tasks))
@@ -84,16 +85,28 @@ def tasks(request):
 @login_required
 def edit_user(request, user_id):
     if request.method == "POST":
-        # TODO edit of user
-        all_users = User.objects.order_by("username")
-        return render(request,
-                      next,
-                      dict(users=all_users))
+        form = EditUserForm(request.POST)
+        if form.is_valid():
+            edited_user = User.objects.get(pk=form.cleaned_data["id"])
+            edited_user.email = form.cleaned_data["email"]
+            edited_user.first_name = form.cleaned_data["first_name"]
+            edited_user.last_name = form.cleaned_data["last_name"]
+            edited_user.save()
+            messages.success(request, "User data has been updated successfully.")
+            return redirect(form.cleaned_data["next"])
+        else:
+            user_to_edit = User.objects.get(pk=user_id)
+            user_form = EditUserForm(instance=user_to_edit)
+            messages.error(request, "Failed to update the user.")
+            return render(request,
+                          "edit_user.html",
+                          dict(user_form=user_form))
     else:
-        user = User.objects.get(pk=user_id)
+        user_to_edit = User.objects.get(pk=user_id)
+        user_form = EditUserForm(instance=user_to_edit)
         return render(request,
                       "edit_user.html",
-                      dict(user=user))
+                      dict(user_form=user_form))
 
 
 @login_required
@@ -105,20 +118,15 @@ def edit_task(request, task_id):
             task_to_edit.number = form.cleaned_data["number"]
             task_to_edit.priority = form.cleaned_data["priority"]
             task_to_edit.save()
-            user_tasks = Task.objects.filter(user=request.user).order_by("-job_date")
-            return render(request,
-                          "tasks.html",
-                          dict(tasks=user_tasks,
-                               taskEditedSuccessfully=True))
+            messages.success(request, "Task has been updated successfully.")
+            return redirect(form.cleaned_data["next"])
         else:
             task_to_edit = Task.objects.get(task_id)
             form = TaskForm(instance=task_to_edit)
-            user_tasks = Task.objects.filter(user=request.user).order_by("-job_date")
+            messages.error(request, "Failed to update the task.")
             return render(request,
                           "edit_task.html",
-                          dict(tasks=user_tasks,
-                               formInvalid=True,
-                               form=form))
+                          dict(form=form))
     else:
         task_to_edit = Task.objects.get(pk=task_id)
         form = TaskForm(instance=task_to_edit)
@@ -137,9 +145,8 @@ def login(request):
             if user is not None:
                 if user.is_active:
                     auth_login(request, user)
-                    tasks = Task.objects.filter(user=request.user).order_by("-job_date")
-                    return render(request, "dashboard.html",
-                                  dict(loggedInSuccess=True, task_form=task_form, tasks=tasks))
+                    messages.success(request, "You have been logged in sucessfully.")
+                    return redirect("dashboard")
             else:
                 return render(request, "account/login.html", dict(form=login_form, disabled=True))
         else:
@@ -159,22 +166,20 @@ def register(request):
                 user_form.cleaned_data["password"])
             # Save the User object
             new_user.save()
-        return render(request,
-                      "account/login.html",
-                      dict(form=login_form, registrationSuccess=True))
+            messages.success(request, "You have been registered sucessfully.")
+            return redirect("login")
     else:
         user_form = UserRegistrationForm()
-    return render(request,
-                  "account/register.html",
-                  dict(user_form=user_form))
+        return render(request,
+                      "account/register.html",
+                      dict(user_form=user_form))
 
 
 @login_required
 def logout(request):
     auth_logout(request)
-    return render(request,
-                  "account/login.html",
-                  dict(form=login_form, loggedOut=True))
+    messages.success(request, "You have been logged out successfully.")
+    return redirect("login")
 
 
 @staff_member_required

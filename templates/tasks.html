@@ -1,10 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tag == "error" %}
+                <div class="alert alert-danger animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
     <div class="row round-all animated slideInDown">
         <h2 class="page-header">All tasks</h2>
         <table class="table">
             <thead class="table-header">
-            <th>#</th>
             <th>Owner</th>
             <th>Created date</th>
             <th>Finish date</th>
@@ -15,7 +29,6 @@
             <tbody>
             {% for task in tasks %}
                 <tr id="task-row-{{ task.id }}">
-                    <td><b>{{ number }}</b></td>
                     <td>{{ task.user.username }}</td>
                     <td>{{ task.job_date }}</td>
                     <td>
@@ -44,6 +57,8 @@
                     <td class="text-center">
                         <a href="{% url 'progress' task.id %}" class="btn btn-success">Details</a>
                         {% if task.state == 0 %}
+                             <a href="{% url 'edit-task' task.id %}"
+                               class="btn btn-success">Edit</a>
                             <button id="cancel-btn-{{ task.id }}"
                                     class="btn btn-warning"
                                     onclick="cancelTask({{ task.id }})">Cancel</button>
