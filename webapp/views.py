@@ -11,7 +11,7 @@ from django.contrib import messages
 
 from .forms import LoginForm, UserRegistrationForm, TaskForm, EditUserForm
 from .models import Task
-from .tasks import some_task
+from .tasks import compute
 from .choices import *
 
 login_form = LoginForm
@@ -31,7 +31,7 @@ def dashboard(request):
             priority = task_form_post.cleaned_data["priority"]
             task = Task(number=number, priority=priority, user=request.user)
             task.save()
-            some_task.delay(task)
+            compute.delay(task)
             messages.success(request, "Successfully added a new task.")
             return redirect("dashboard")
         else:

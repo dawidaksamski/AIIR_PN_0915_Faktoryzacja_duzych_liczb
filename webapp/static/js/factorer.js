@@ -45,6 +45,7 @@ function cancelTask(id) {
                 if (data.success) {
                     $("#state-" + id).text("Cancelled");
                     $("#cancel-btn-" + id).remove()
+                    $("#edit-btn-" + id).remove()
                 }
             }
         });

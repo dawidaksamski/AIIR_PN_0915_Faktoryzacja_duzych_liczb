@@ -13,6 +13,7 @@ class Task(models.Model):
     result = models.CharField(max_length=200)
     progress = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    time = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.number)
