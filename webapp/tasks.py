@@ -65,10 +65,10 @@ def compute(task_to_do):
 
 @task()
 def schedule_task():
-    task_in_progress = Task.objects.filter(state=WORKING_STATUS)
+    task_in_progress = Task.objects.filter(state=WORKING_STATUS).exclude(state=CANCELLED_STATUS)
     if task_in_progress:
         return 0
-    next_task = Task.objects.order_by("-priority", "job_date")
+    next_task = Task.objects.order_by("-priority", "job_date").exclude(state=CANCELLED_STATUS)
     print("Found task(priority): " + next_task.priority)
     compute.delay(next_task);
     print("Putted new task into queue.")
