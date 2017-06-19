@@ -12,6 +12,9 @@ import math
 
 @task()
 def compute(task_to_do):
+    if task_to_do.state == CANCELLED_STATUS:
+        return 0
+
     start = time.time()
     result = ""
     task_to_do.state = WORKING_STATUS
