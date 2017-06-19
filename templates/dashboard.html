@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tag == "error" %}
+                <div class="alert alert-danger animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="row round-all animated slideInDown">
+        <h2 class="page-header">Your tasks</h2>
+        <p>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-block btn-lg btn-primary"
+                    data-toggle="modal" data-target="#task">
+                Add a new   task
+            </button>
+        </p>
+
+        <table class="table">
+            <thead class="table-header">
+            <th>Created date</th>
+            <th>Finish date</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.job_date }}</td>
+                    <td>
+                        {% if task.job_finished_date is None %}
+                            {% if task.state == -1 %}
+                                <span>Cancelled</span>
+                            {% else %}
+                                <span>Task pending</span>
+                            {% endif %}
+                        {% else %}
+                            {{ task.job_finished_date }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <b>
+                            <span style="{% if task.priority == 0 %}
+                                            color: green;
+                                         {% elif task.priority == 1 %}
+                                            color: yellow;
+                                         {% elif task.priority == 2 %}
+                                            color: orange;
+                                         {% else %}
+                                            color: red;
+                                         {% endif %}">
+                            {{ task.get_priority_display }}
+                            </span>
+                        </b>
+                    </td>
+                    <td id="state-{{ task.id }}">{{ task.get_state_display }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'progress' task.id %}" class="btn btn-primary">Details</a>
+                        {% if task.state == 0 %}
+                            <a href="{% url 'edit-task' task.id %}"
+                               id="edit-btn-{{ task.id }}"
+                               class="btn btn-success">Edit</a>
+                            <button id="cancel-btn-{{ task.id }}"
+                                    class="btn btn-warning"
+                                    onclick="cancelTask({{ task.id }})">Cancel</button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal New task-->
+    <div class="modal fade" id="task" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add new task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'dashboard' %}" method="post" class="form-horizontal" role="form">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ next }}"/>
+                        <div class="form-group">
+                            <label class="control-label" style="margin-left: 15px;"
+                                   for="number">Enter number to factor:</label>
+                            <div class="col-sm-12">
+                                {{ task_form.number|add_class:"form-control"|attr:"placeholder:Enter number" }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" style="margin-left: 15px;"
+                                   for="priority">Select priority of the task:</label>
+                            <div class="col-sm-12">
+                                {{ task_form.priority|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Add task"/>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}

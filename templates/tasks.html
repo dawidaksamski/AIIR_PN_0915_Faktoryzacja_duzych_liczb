@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tag == "error" %}
+                <div class="alert alert-danger animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success animated zoomIn">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="row round-all animated slideInDown">
+        <h2 class="page-header">All tasks</h2>
+        <table class="table">
+            <thead class="table-header">
+            <th>Owner</th>
+            <th>Created date</th>
+            <th>Finish date</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr id="task-row-{{ task.id }}">
+                    <td>{{ task.user.username }}</td>
+                    <td>{{ task.job_date }}</td>
+                    <td>
+                        {% if task.job_finished_date is None %}
+                            <span>Task pending</span>
+                        {% else %}
+                            {{ task.job_finished_date }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <b>
+                            <span style="{% if task.priority == 0 %}
+                                            color: green;
+                                         {% elif task.priority == 1 %}
+                                            color: yellow;
+                                         {% elif task.priority == 2 %}
+                                            color: orange;
+                                         {% else %}
+                                            color: red;
+                                         {% endif %}">
+                            {{ task.get_priority_display }}
+                            </span>
+                        </b>
+                    </td>
+                    <td id="state-{{ task.id }}">{{ task.get_state_display }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'progress' task.id %}" class="btn btn-success">Details</a>
+                        {% if task.state == 0 %}
+                             <a href="{% url 'edit-task' task.id %}"
+                               class="btn btn-success">Edit</a>
+                            <button id="cancel-btn-{{ task.id }}"
+                                    class="btn btn-warning"
+                                    onclick="cancelTask({{ task.id }})">Cancel</button>
+                        {% endif %}
+                        <button class="btn btn-danger"
+                                onclick="deleteTask({{ task.id }})">Delete</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
