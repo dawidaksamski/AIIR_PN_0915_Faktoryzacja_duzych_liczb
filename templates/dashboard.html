@@ -40,7 +40,11 @@
                     <td>{{ task.job_date }}</td>
                     <td>
                         {% if task.job_finished_date is None %}
-                            <span>Task pending</span>
+                            {% if task.state == -1 %}
+                                <span>Cancelled</span>
+                            {% else %}
+                                <span>Task pending</span>
+                            {% endif %}
                         {% else %}
                             {{ task.job_finished_date }}
                         {% endif %}
@@ -65,6 +69,7 @@
                         <a href="{% url 'progress' task.id %}" class="btn btn-primary">Details</a>
                         {% if task.state == 0 %}
                             <a href="{% url 'edit-task' task.id %}"
+                               id="edit-btn-{{ task.id }}"
                                class="btn btn-success">Edit</a>
                             <button id="cancel-btn-{{ task.id }}"
                                     class="btn btn-warning"

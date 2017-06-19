@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from datetime import timedelta
+
 import djcelery
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -39,7 +41,8 @@ INSTALLED_APPS = [
     "webapp.apps.WebappConfig",
     "widget_tweaks",
     "djcelery",
-    "kombu.transport.django"
+    "kombu.transport.django",
+    "findspark"
 ]
 
 MIDDLEWARE = [
@@ -131,3 +134,11 @@ STATICFILES_DIRS = (
 
 djcelery.setup_loader()
 BROKER_URL = "django://127.0.0.1"
+
+#
+# CELERYBEAT_SCHEDULE = {
+#     "schedule-next-task": {  # example: 'file-backup'
+#         "task": "webapp.tasks.schedule_task",  # example: 'files.tasks.cleanup'
+#         "schedule": timedelta(seconds=10)
+#     },
+# }
